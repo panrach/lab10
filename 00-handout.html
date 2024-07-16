@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="initial-scale=1">
+<title>B09 Lab week 10</title>
+<style>
+h1, h2, h3 { color: blue; }
+*.nest { margin-left: 2em }
+table {
+  border-collapse: collapse;
+}
+td, th {
+  padding: 3pt;
+  vertical-align: baseline;
+  border: 1pt solid;
+}
+td, th.left {
+  text-align: left;
+}
+</style>
+</head>
+<body>
+<h1>B09 Lab week 10</h1>
+
+<p>This is an exercise on the nuances in spawning processes and setting up
+pipes.
+
+<p>Overview: Two programs foo.c and bar.c are provided. Your job is to write
+your own program, bridge.c, that spawns them and sets them up for two-way
+communication by pipes.  A makefile is provided for compiling all of them.
+
+<p>In more detail:
+
+<p>bridge should spawn both foo and bar as children, then wait for both to
+terminate.
+
+<p>foo expects two command line arguments for: file descriptor to read from, file
+descriptor to write to.  See the sample foo.c for details.
+
+<p>bar expects two command line arguments for: file descriptor to read from, file
+descriptor to write to.  See the sample bar.c for details.
+
+<p>So bridge should create two pipes: one for the foo-&gt;bar direction (foo writes,
+bar reads), the other for the foo&lt;-bar direction (foo reads, bar writes).
+And bridge should exec foo and bar with arguments accordingly.
+(<code>snprintf()</code> is very helpful for converting numbers to strings.
+You may assume that each number is only 10 digits.)
+
+<p>bridge should not redirect stdout for foo and bar.  They need stdout for the
+reports shown below.
+
+<p>For simplicity, please hardcode the pathnames <code>./foo</code> and
+<code>./bar</code> for the executables.
+
+<p>If bridge.c is correct, foo and bar will report these:
+
+<pre>
+foo sends msg 1
+bar reads, next line is what I get
+msg 1
+bar sends reply 1
+foo reads, next line is what I get
+reply 1
+foo closes write end and waits for bar to do the same
+bar closes write end and waits for foo to do the same
+bar is satisfied
+foo is satisfied
+</pre>
+
+<p>The last two “satisfied” lines may be in the other order; this is up to the
+kernel.
+
+<p>A few common mistakes to watch out for:
+
+<ul>
+  <li>Goofing the arguments to <code>exec()</code>.  There is diagnostic code in
+    foo.c and bar.c to help you cross check, currently disabled, but you can
+    enable and recompile.
+
+  <li>Forgetting to close some file descriptors. If you don't get the “satified”
+    messages, this is the #1 suspect.
+</ul>
+
+<p>When marking, I will use a different pair of foo.c and bar.c, which exchange
+some other messages and print some other reports.  There is nothing to worry
+about if you do piping and spawning correctly.
+
+<p>What to hand in: bridge.c
+
+</body>
+</html>
